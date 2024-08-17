@@ -1,11 +1,21 @@
-import type { MetaFunction } from "@remix-run/node";
+import { type MetaFunction } from "@remix-run/node";
+import { typedjson } from "remix-typedjson";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
+    { title: "Do It" },
     { name: "description", content: "Welcome to Remix!" },
   ];
 };
+
+export async function loader() {
+  const response = await fetch(
+    "https://jsonplaceholder.typicode.com/posts?_limit=5"
+  );
+  const data = await response.json();
+  console.log(data);
+  return typedjson({ posts: data });
+}
 
 export default function Index() {
   return (
