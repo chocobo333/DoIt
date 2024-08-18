@@ -1,5 +1,6 @@
 import { type MetaFunction } from "@remix-run/node";
 import { typedjson } from "remix-typedjson";
+import { globalPrisma } from "~/lib/prismaClient";
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,13 +9,12 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+const prisma = globalPrisma;
+
 export async function loader() {
-  const response = await fetch(
-    "https://jsonplaceholder.typicode.com/posts?_limit=5"
-  );
-  const data = await response.json();
-  console.log(data);
-  return typedjson({ posts: data });
+  const todos = await prisma.findAll();
+  console.log(todos);
+  return typedjson(todos);
 }
 
 export default function Index() {
