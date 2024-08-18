@@ -3,11 +3,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 class GlobalPrisma {
   async findAll() {
-    return await prisma.toDo.findMany();
+    return await prisma.todo.findMany();
   }
 
   async create(body: string) {
-    await prisma.toDo.create({
+    await prisma.todo.create({
       data: {
         body: body,
         deadline: new Date(),
@@ -17,7 +17,7 @@ class GlobalPrisma {
   }
 
   async delete(id: number) {
-    await prisma.toDo.delete({
+    await prisma.todo.delete({
       where: {
         id: id,
       },

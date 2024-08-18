@@ -1,4 +1,4 @@
-import { ToDo } from "@prisma/client";
+import { Todo } from "@prisma/client";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { Form, MetaFunction } from "@remix-run/react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
@@ -32,7 +32,7 @@ export async function action({ request }: ActionFunctionArgs) {
   return null;
 }
 export default function ToDos() {
-  const todos: ToDo[] = useTypedLoaderData<typeof loader>();
+  const todos: Todo[] = useTypedLoaderData<typeof loader>();
   return (
     <div className="flex-1 flex-col p-6  space-y-4 h-screen bg-background">
       <h1>ToDos</h1>
@@ -47,7 +47,7 @@ export default function ToDos() {
         </Button>
       </Form>
       <div className="space-y-1">
-        {todos.map((todo: ToDo) => {
+        {todos.map((todo: Todo) => {
           return <ToDoCard key={todo.id} todo={todo} />;
         })}
       </div>

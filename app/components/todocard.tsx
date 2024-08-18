@@ -1,11 +1,11 @@
-import { ToDo } from "@prisma/client";
+import { Todo } from "@prisma/client";
 import { SVGProps } from "react";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Form } from "@remix-run/react";
 
 interface ToDoCardProps {
-  todo: ToDo;
+  todo: Todo;
 }
 
 export function ToDoCard({ todo }: ToDoCardProps) {
