@@ -15,6 +15,15 @@ class GlobalPrisma {
     });
     return;
   }
+
+  async delete(id: number) {
+    await prisma.toDo.delete({
+      where: {
+        id: id,
+      },
+    });
+    return;
+  }
 }
 
 export const globalPrisma = new GlobalPrisma();
