@@ -1,18 +1,28 @@
 import { Todo } from "@prisma/client";
-import { ActionFunctionArgs } from "@remix-run/node";
-import {
-  Form,
-  json,
-  MetaFunction,
-  useActionData,
-  useNavigation,
-} from "@remix-run/react";
-import { useEffect, useRef } from "react";
+import { MetaFunction } from "@remix-run/react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { ToDoCard } from "~/components/todocard";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer";
 import { globalPrisma } from "~/lib/prismaClient";
+import TodoForm from "./todos.create";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "~/components/ui/sheet";
+import { useState } from "react";
 
 const prisma = globalPrisma;
 
@@ -28,45 +38,36 @@ export async function loader() {
   return typedjson(todos);
 }
 
-export async function action({ request }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const body = formData.get("body");
-
-  if (body) {
-    prisma.create(body.toString());
-  }
-
-  return typedjson({ ok: true });
-}
 export default function ToDos() {
   const todos: Todo[] = useTypedLoaderData<typeof loader>();
-
-  const actionData = useActionData<typeof action>();
-  const formRef = useRef<HTMLFormElement>(null);
-  useEffect(() => {
-    if (actionData?.ok) {
-      formRef.current?.reset();
-    }
-  }, [actionData]);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="flex-1 flex-col p-6  space-y-4 h-screen bg-background">
       <h1>ToDos</h1>
-      <Form ref={formRef} method="post" className="flex items-center space-x-2">
-        <Input
-          placeholder="Add a new todo..."
-          name="body"
-          className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-        />
-        <Button size="sm" type="submit">
-          Add
-        </Button>
-      </Form>
       <div className="space-y-1">
         {todos.map((todo: Todo) => {
           return <ToDoCard key={todo.id} todo={todo} />;
         })}
       </div>
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger>
+          <Button>New Todo</Button>
+        </SheetTrigger>
+        <SheetContent side="bottom">
+          <SheetHeader>
+            <SheetTitle>New Todo</SheetTitle>
+          </SheetHeader>
+          <div className="px-4 py-2">
+            <TodoForm setOpen={setOpen} />
+          </div>
+          {/* <SheetFooter>
+            <SheetClose asChild>
+              <Button>Cancel</Button>
+            </SheetClose>
+          </SheetFooter> */}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
