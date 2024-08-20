@@ -1,6 +1,13 @@
 import { Todo } from "@prisma/client";
 import { ActionFunctionArgs } from "@remix-run/node";
-import { Form, MetaFunction } from "@remix-run/react";
+import {
+  Form,
+  json,
+  MetaFunction,
+  useActionData,
+  useNavigation,
+} from "@remix-run/react";
+import { useEffect, useRef } from "react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { ToDoCard } from "~/components/todocard";
 import { Button } from "~/components/ui/button";
@@ -29,14 +36,23 @@ export async function action({ request }: ActionFunctionArgs) {
     prisma.create(body.toString());
   }
 
-  return null;
+  return typedjson({ ok: true });
 }
 export default function ToDos() {
   const todos: Todo[] = useTypedLoaderData<typeof loader>();
+
+  const actionData = useActionData<typeof action>();
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (actionData?.ok) {
+      formRef.current?.reset();
+    }
+  }, [actionData]);
+
   return (
     <div className="flex-1 flex-col p-6  space-y-4 h-screen bg-background">
       <h1>ToDos</h1>
-      <Form method="post" className="flex items-center space-x-2">
+      <Form ref={formRef} method="post" className="flex items-center space-x-2">
         <Input
           placeholder="Add a new todo..."
           name="body"
