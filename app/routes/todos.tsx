@@ -51,7 +51,7 @@ export default function ToDos() {
         })}
       </div>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger>
+        <SheetTrigger asChild>
           <Button>New Todo</Button>
         </SheetTrigger>
         <SheetContent side="bottom">
